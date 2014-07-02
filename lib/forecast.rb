@@ -1,13 +1,13 @@
 # API request every 5 minutes.  ( 12/hr, 288/day )
 
-class ForecastIO
+class Forecast
 
   @@meters_to_miles = 2.23694 
   attr_accessor :response, :url, :temperature, :windspeed
   
   def initialize(lat, long)
     @url = "https://api.forecast.io/forecast/#{ENV["FORECAST_KEY"]}/#{lat},#{long}"
-    @response = HTTParty.get(url)
+    @response = HTTParty.get(url).parsed_response
     @temperature = response["currently"]["temperature"]
     @windspeed = ( response["currently"]["windSpeed"] * @@meters_to_miles).round
   end
@@ -19,13 +19,14 @@ class ForecastIO
   end
   
   def precipitation
-    response["minutely"]["data"].map do |p|
-      { 
-        time: Time.at(p["time"]), 
-        probability: (p["precipProbability"] > 0.50), 
-        intensity: intensity(p["precipIntensity"])  
-      }
-    end
+    response.inspect
+    # response["minutely"]["data"].map do |p|
+    #   { 
+    #     time: Time.at(p["time"]), 
+    #     probability: (p["precipProbability"] > 0.50), 
+    #     intensity: intensity(p["precipIntensity"])  
+    #   }
+    # end
   end
   
   def intensity(int)

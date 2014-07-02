@@ -1,3 +1,4 @@
+$:.unshift(File.expand_path('../lib', __FILE__))
 
 require 'rubygems'
 require 'bundler'
@@ -7,4 +8,5 @@ require 'dotenv'
 Dotenv.load
 
 require './app'
+require 'forecast'
 run Api
