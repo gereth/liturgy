@@ -7,6 +7,7 @@ Bundler.require(:default)
 require 'dotenv'
 Dotenv.load
 
+require 'json'
 require './app'
-require 'forecast'
+require 'realization'
 run Api
