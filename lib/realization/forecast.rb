@@ -3,19 +3,18 @@
 module Realization
   class Forecast
 
-    METERS_TO_MILE = 2.23694 
     attr_accessor :response, :url, :temperature, :windspeed
   
     def initialize(lat, long)
       @url = "https://api.forecast.io/forecast/#{ENV["FORECAST_KEY"]}/#{lat},#{long}"
       @response = HTTParty.get(url).parsed_response
-      @temperature = response["currently"]["temperature"]
-      @windspeed = ( response["currently"]["windSpeed"] * METERS_TO_MILE).round
+      @temperature = temp_intensity(response["currently"]["temperature"])
+      @windspeed =   wind_intensity(response["currently"]["windSpeed"])
     end
   
     %w[ sunrise sunset].each do |kind|
       define_method(kind) do
-        Time.at response["daily"]["data"].first["#{kind}Time"]
+        Time.at(response["daily"]["data"].first["#{kind}Time"]).to_i
       end
     end
   
@@ -24,12 +23,44 @@ module Realization
         { 
           time: Time.at(p["time"]), 
           probability: (p["precipProbability"] > 0.50), 
-          intensity: intensity(p["precipIntensity"])  
+          precip_intensity: precip_intensity(p["precipIntensity"])  
         }
       end
     end
+    
+    # http://en.wikipedia.org/wiki/Beaufort_scale, 1..12
+    def wind_intensity(int)
+      case int
+        when 1..3
+          'light-air'
+        when 4..7
+          'light-breeze'
+        when 8..12
+          'gentle-breeze'
+        when 13..17
+          'moderate-breeze'
+        when 18..24
+          'fresh-breeze'
+        when 25..30
+          'strong-breeze'
+        when 31..38
+          'high-wind'
+        when 39..46
+          'gale'
+        when 47..54
+          'strong-gale'
+        when 55..63
+          'storm'
+        when 64..73
+          'violent-storm'
+        when 74..120
+          'hurricane'
+        else
+          'calm'
+      end
+    end
   
-    def intensity(int)
+    def precip_intensity(int)
       case int
         when 0.002..0.017
           "very-light"
@@ -41,6 +72,35 @@ module Realization
           "heavy"
       end
     end
-      
+    
+    # very cold
+    # cold
+    # moderate
+    # moderate-warm
+    # warm
+    # very-warm
+    # hot
+    def temp_intensity(int)
+      "temp"
+      # case int
+      # end
+    end
+    
+    def to_score
+      precip = precipitation.first
+      {
+        raining: precip[:probability],
+        raining_intensity: precip[:intensity],
+        sunrise: occuring(:sunrise),
+        sunset: occuring(:sunset),
+        windspeed:  windspeed,
+        temperature: temperature
+      }
+    end
+    
+    def occuring(start)
+      start = send(start)
+      Time.now.to_i === (start..(start + 20.minutes ))
+    end
   end
 end
