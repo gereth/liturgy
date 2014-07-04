@@ -10,4 +10,4 @@ Dotenv.load
 require 'json'
 require './app'
 require 'realization'
-run Api
+run App
