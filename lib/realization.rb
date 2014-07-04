@@ -26,7 +26,7 @@ module Realization
     # sunset  ( 20m )  -> sunset
     # flights nearby   -> flights | no flights<optional>
     # flight kind      -> large | small | private 
-    #
+    # 30 possible
     
     def to_score
       forecast = Realization::Forecast.new(lat, long)

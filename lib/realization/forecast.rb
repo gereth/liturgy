@@ -100,7 +100,7 @@ module Realization
     
     def occuring(start)
       start = send(start)
-      Time.now.to_i === (start..(start + 20.minutes ))
+      (start..(start + 20.minutes )) === Time.now.to_i
     end
   end
 end
