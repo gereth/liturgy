@@ -81,8 +81,22 @@ module Realization
     # very-warm
     # hot
     def temp_intensity(int)
-      "temp"
-
+      case int
+      when -100..10
+        "very-cold"
+      when 11..40
+        "cold"
+      when 41..60
+        "moderate"
+      when 61..70
+        "moderate-warm"
+      when 71..80
+        "warm"
+      when 81..90
+        "very-warm"
+      when 90..110
+        "hot"
+      end
     end
     
     def to_score
