@@ -4,12 +4,11 @@ require 'realization/flights'
 module Realization
   class Api
 
-    attr_accessor :lat, :long, :location, :channels
+    attr_accessor :lat, :long, :channels
 
     def initialize(location, channels)
       @channels   = channels
-      @location   = location
-      @lat, @long = location_to_coordinates(location)
+      @lat, @long = location_to_coordinates(location.to_sym)
     end
 
     def location_to_coordinates(location)
@@ -26,7 +25,8 @@ module Realization
     # sunset  ( 20m )  -> sunset
     # flights nearby   -> flights | no flights<optional>
     # flight kind      -> large | small | private 
-    # 30 possible
+    # 30 possible 
+    #
     
     def to_score
       forecast = Realization::Forecast.new(lat, long)

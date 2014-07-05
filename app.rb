@@ -2,7 +2,7 @@
 class App < Sinatra::Base
   
   use Rack::Auth::Basic, "Restricted Area" do |user, key|
-    user == 'api' and key == ENV['api_key']
+    user == 'api' and key == ENV['API_KEY']
   end
   
   configure do
@@ -11,7 +11,7 @@ class App < Sinatra::Base
   
   get '/api/realization.json' do
     content_type :json
-    realization = Realization::Api.new(:clinton_division)
-    realization.to_score
+    realization = Realization::Api.new(params[:location], params[:channels])
+    realization.to_score.to_json
   end
 end

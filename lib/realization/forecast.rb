@@ -82,8 +82,7 @@ module Realization
     # hot
     def temp_intensity(int)
       "temp"
-      # case int
-      # end
+
     end
     
     def to_score
