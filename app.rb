@@ -1,4 +1,10 @@
 
+# TODO 
+# - heroku deploy
+# - heroku config vars
+# - redis to go addon w/ redis-sinatra - http://redis-store.org/redis-sinatra/
+ 
+
 class App < Sinatra::Base
   
   use Rack::Auth::Basic, "Restricted Area" do |user, key|

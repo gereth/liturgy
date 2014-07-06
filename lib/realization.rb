@@ -23,8 +23,7 @@ module Realization
     # windspeed        -> light-air | etc.. s
     # sunrise ( 20m )  -> sunrise
     # sunset  ( 20m )  -> sunset
-    # flights nearby   -> flights | no flights<optional>
-    # flight kind      -> large | small | private 
+    # flights nearby   -> flights
     # 30 possible 
     #
     

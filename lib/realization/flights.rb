@@ -17,7 +17,9 @@ module Realization
     end
 
     def to_score
-      {}
+      {
+        flights: nearby.any?
+      }
     end
     
     def get(url)
@@ -30,7 +32,8 @@ module Realization
 
     def nearby
       url = [ config[:base], 'flightsNear', lat, long, distance ].join("/")
-      map get(url)
+      # map get(url)
+      get(url)
     end
 
     def map(flights)

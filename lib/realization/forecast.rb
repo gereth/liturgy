@@ -73,13 +73,6 @@ module Realization
       end
     end
     
-    # very cold
-    # cold
-    # moderate
-    # moderate-warm
-    # warm
-    # very-warm
-    # hot
     def temp_intensity(int)
       case int
       when -100..10
