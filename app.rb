@@ -14,11 +14,12 @@ class App < Sinatra::Base
   
   get '/api/realization.json' do
     content_type :json
-    settings.cache.fetch("score-#{@ocation}", expires_in: 60) do
+    settings.cache.fetch("score-#{@location}", expires_in: 60) do
       Realization::Api.new(@location, @channels).to_score.to_json
     end
   end
   
+  protected
   def setup_params
     %w( location lat long channels ).each do |name|
       instance_variable_set(:"@#{name}", params.fetch(name)) if params[name]
