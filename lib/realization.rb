@@ -28,9 +28,9 @@ module Realization
     #
     
     def to_score
+      puts "<> creating score"
       forecast = Realization::Forecast.new(lat, long)
-      flights = Realization::Flights.new(lat, long, 5)
-
+      flights  = Realization::Flights.new(lat, long, 5)
       Hash[ *[forecast, flights].map{|obj| obj.to_score.to_a}.flatten].select {|k,v| v}
     end  
   end
