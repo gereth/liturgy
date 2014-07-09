@@ -4,10 +4,9 @@ require 'realization/flights'
 module Realization
   class Api
 
-    attr_accessor :lat, :long, :channels
+    attr_accessor :lat, :long
 
-    def initialize(location, channels)
-      @channels   = channels
+    def initialize(location)
       @lat, @long = location_to_coordinates(location.to_sym)
     end
 
