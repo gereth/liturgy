@@ -15,7 +15,7 @@ class App < Sinatra::Base
   get '/api/realization.json' do
     content_type :json
     settings.cache.fetch(cache_name, expires_in: 60) do
-      Realization::Api.new(@location).to_score.to_json
+      Realization::Api.new(@location, @channels).to_score.to_json
     end
   end
   

@@ -74,7 +74,7 @@ module Realization
     end
     
     def temp_intensity(int)
-      case int
+      case int.round
       when -100..10
         "very-cold"
       when 11..40
