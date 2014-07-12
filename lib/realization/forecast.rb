@@ -4,30 +4,30 @@ module Realization
   class Forecast
 
     attr_accessor :response, :url, :temperature, :windspeed
-  
+
     def initialize(lat, long)
       @url = "https://api.forecast.io/forecast/#{ENV["FORECAST_KEY"]}/#{lat},#{long}"
       @response = HTTParty.get(url).parsed_response
       @temperature = temp_intensity(response["currently"]["temperature"])
       @windspeed =   wind_intensity(response["currently"]["windSpeed"])
     end
-  
+
     %w[ sunrise sunset].each do |kind|
       define_method(kind) do
         Time.at(response["daily"]["data"].first["#{kind}Time"]).to_i
       end
     end
-  
+
     def precipitation
       response["minutely"]["data"].map do |p|
-        { 
-          time: Time.at(p["time"]), 
-          probability: (p["precipProbability"] > 0.50), 
-          precip_intensity: precip_intensity(p["precipIntensity"])  
+        {
+          time: Time.at(p["time"]),
+          probability: (p["precipProbability"] > 0.50),
+          precip_intensity: precip_intensity(p["precipIntensity"])
         }
       end
     end
-    
+
     # http://en.wikipedia.org/wiki/Beaufort_scale, 1..12
     def wind_intensity(int)
       case int
@@ -59,7 +59,7 @@ module Realization
           'calm'
       end
     end
-  
+
     def precip_intensity(int)
       case int
         when 0.002..0.017
@@ -72,7 +72,7 @@ module Realization
           "heavy"
       end
     end
-    
+
     def temp_intensity(int)
       case int.round
       when -100..10
@@ -91,7 +91,7 @@ module Realization
         "hot"
       end
     end
-    
+
     def to_score
       precip = precipitation.first
       {
@@ -103,7 +103,7 @@ module Realization
         temperature: temperature
       }
     end
-    
+
     def occuring(start)
       start = send(start)
       (start..(start + 20.minutes )) === Time.now.to_i
