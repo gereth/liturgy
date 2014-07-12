@@ -92,21 +92,25 @@ module Realization
       end
     end
 
-    def to_score
-      precip = precipitation.first
-      {
-        raining: precip[:probability],
-        raining_intensity: precip[:intensity],
-        sunrise: occuring(:sunrise),
-        sunset: occuring(:sunset),
-        windspeed:  windspeed,
-        temperature: temperature
-      }
+    def current_precipitation
+      if precip = precipitation.first.try(:[],:intensity)
+        "precipitation%s" % precip
+      end
     end
 
-    def occuring(start)
-      start = send(start)
-      (start..(start + 20.minutes )) === Time.now.to_i
+    def to_score
+      [
+        current_precipitation,
+        occuring(:sunrise),
+        occuring(:sunset),
+        "windspeed/%s" %  windspeed,
+        "temperature/%s" % temperature
+      ].compact
+    end
+
+    def occuring(event)
+      start = send(event)
+      event.to_s if (start..(start + 20.minutes )) === Time.now.to_i
     end
   end
 end
