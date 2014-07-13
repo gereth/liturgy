@@ -17,30 +17,31 @@ module Realization
       }.fetch(location)
     end
 
-    # raining, cold, windy, sunset, flights
-    #
-    # temp             -> very cold | cold | moderate | warm | very warm
-    #  -- 
-    # precip           -> raining | not raining<optional>
-    # precip add       -> very-light | light | moderate | heavy
-    #  --
-    # windspeed        -> light-air | etc.. s
-    #  -- might need to have a val of intensity
-    # sunrise ( 20m )  -> sunrise
-    #  -- main. pan center
-    # sunset  ( 20m )  -> sunset
-    #  -- main. pan center
-    # flights nearby   -> flights
-    #  -- always pretty low.  should play and pan from left to right.
-    # 30 possible 
-    #
-    
-    def to_score
+    def playing
       forecast = Realization::Forecast.new(lat, long)
       flights  = Realization::Flights.new(lat, long, 5)
-      Hash[ *[forecast, flights].map{|obj| obj.to_score.to_a}.flatten].select {|k,v| v}
+      [forecast, flights].map{|api| api.to_score }.flatten.compact
     end
-    
+
+    def add
+      playing - channels
+    end
+
+    def remove
+      channels - playing
+    end
+
+    def change
+      []
+    end
+
+    def skip?
+      (add + remove).flatten.empty?
+    end
+
+    def score!
+      { add: add, remove: remove, skip: skip? }
+    end
+
   end
 end
-
