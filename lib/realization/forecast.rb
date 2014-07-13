@@ -93,8 +93,8 @@ module Realization
     end
 
     def current_precipitation
-      if precip = precipitation.first.try(:[],:intensity)
-        "precipitation%s" % precip
+      if intensity = precipitation.first[:intensity]
+        "precipitation%s" % intensity
       end
     end
 
@@ -105,12 +105,12 @@ module Realization
         occuring(:sunset),
         "windspeed/%s" %  windspeed,
         "temperature/%s" % temperature
-      ].compact
+      ]
     end
 
     def occuring(event)
       start = send(event)
-      event.to_s if (start..(start + 20.minutes )) === Time.now.to_i
+      event.to_s if (start..(start + 60*20 )) === Time.now.to_i
     end
   end
 end

@@ -17,14 +17,14 @@ module Realization
     end
 
     def to_score
-      {
-        flights: nearby.any?
-      }
+      "flights" if nearby
     end
-    
+
     def get(url)
       query = { appId: config[:app_id], appKey: config[:app_key] }
-      HTTParty.get(url, query: query).parsed_response.try(:[], "flightPositions")
+      if resp = HTTParty.get(url, query: query).parsed_response
+        resp["flightPositions"].any?
+      end
     end
 
     # Flights within area specified by point and distance ( miles )
@@ -49,5 +49,5 @@ module Realization
       %x{ open -a /Applications/Firefox.app "#{url}" }
     end
   end
-  
+
 end
