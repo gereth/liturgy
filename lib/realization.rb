@@ -43,5 +43,8 @@ module Realization
       { add: add, remove: remove, skip: skip? }
     end
 
+    def automation
+      @automation ||= YAML.load_file( File.join(File.dirname(__FILE__), "realization", "automation.yml"))
+    end
   end
 end
