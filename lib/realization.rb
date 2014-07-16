@@ -7,7 +7,7 @@ module Realization
     attr_accessor :lat, :long, :channels
 
     def initialize(location, channels)
-      @channels   = channels
+      @channels   = JSON.parse(channels)
       @lat, @long = location_to_coordinates(location.to_sym)
     end
 
@@ -24,7 +24,10 @@ module Realization
     end
 
     def add
-      playing - channels
+      # playing - channels
+      ["choir"].map do |name|
+        add_automation(name)
+      end
     end
 
     def remove
@@ -39,8 +42,12 @@ module Realization
       (add + remove).flatten.empty?
     end
 
+    def add_automation(name)
+      automation[name.to_s].merge!(name: name)
+    end
+
     def score!
-      { add: add, remove: remove, skip: skip? }
+      { add: add, remove: remove, skip: skip? }.to_json
     end
 
     def automation
