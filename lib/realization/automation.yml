@@ -1,11 +1,11 @@
 choir:
-  volume:
+  :volume:
     start: 0.01
     stop: 0.88
     delay: 0.02
     step: 0.01
     direction: "up"
-  pan:
+  :pan:
     start: 0.04
     stop: 0.88
     delay: 0.32

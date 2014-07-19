@@ -18,16 +18,14 @@ module Realization
     end
 
     def playing
-      forecast = Realization::Forecast.new(lat, long)
-      flights  = Realization::Flights.new(lat, long, 5)
-      [forecast, flights].map{|api| api.to_score }.flatten.compact
+      # forecast = Realization::Forecast.new(lat, long)
+      # flights  = Realization::Flights.new(lat, long, 5)
+      # [forecast, flights].map{|api| api.to_score }.flatten.compact
+      ["choir"]
     end
 
     def add
-      # playing - channels
-      ["choir"].map do |name|
-        add_automation(name)
-      end
+      (playing - channels)
     end
 
     def remove
@@ -43,11 +41,15 @@ module Realization
     end
 
     def add_automation(name)
-      automation[name.to_s].merge!(name: name)
+      automation[name].merge!(name: name)
     end
 
     def score!
-      { add: add, remove: remove, skip: skip? }.to_json
+      {
+        add: add.map{ |channel| add_automation(channel) },
+        remove: remove,
+        skip: skip?
+      }.to_json
     end
 
     def automation
