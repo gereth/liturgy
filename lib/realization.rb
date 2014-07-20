@@ -25,7 +25,7 @@ module Realization
     end
 
     def add
-      (playing - channels)
+      playing - channels
     end
 
     def remove
