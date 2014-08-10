@@ -1,34 +1,31 @@
 class App < Sinatra::Base
+  attr_accessor :payload
 
-  use Rack::Auth::Basic, "Restricted Area" do |user, key|
-    user == 'api' and key == ENV['API_KEY']
-  end
+  # use Rack::Auth::Basic, "Restricted Area" do |user, key|
+  #   user == 'api' and key == ENV['API_KEY']
+  # end
 
   configure do
     set :cache, Sinatra::Cache::RedisStore.new(url: (ENV['REDISTOGO_URL'] || 'redis://127.0.0.1:6379'))
   end
 
   before do
-    setup_params
+    parse_payload
   end
 
-  get '/api/realization.json' do
-    content_type :json
-    settings.cache.fetch(cache_name, expires_in: 60) do
-      Realization::Api.new(@location, @channels).score!
+  post '/api/realization' do
+    settings.cache.fetch(cache_name, expires_in: 2) do
+      Realization::Api.new(payload).score!
     end
+  end
+
+  def parse_payload
+    @payload ||= JSON.parse(request.body.read)
   end
 
   protected
-
   def cache_name
-    ["store", @location, @channels].flatten.join("-")
-  end
-
-  def setup_params
-    %w( location lat long channels ).each do |name|
-      instance_variable_set(:"@#{name}", params.fetch(name)) if params[name]
-    end
+    ["store", payload["location"], payload["channels"]].flatten.join("-")
   end
 end
 
