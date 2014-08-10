@@ -3,25 +3,21 @@ require 'realization/flights'
 
 module Realization
   class Api
+    attr_accessor *@@accessors = %i|lat long current_distance channels |
 
-    attr_accessor :lat, :long, :channels
-
-    def initialize(location, channels)
-      @channels   = JSON.parse(channels)
-      @lat, @long = location_to_coordinates(location.to_sym)
-    end
-
-    def location_to_coordinates(location)
-      {
-        clinton_division: [45.512157, -122.611175]
-      }.fetch(location)
+    def initialize(options)
+      @@accessors.each do |attr|
+        instance_variable_set("@#{attr}", options[attr.to_s])
+      end
     end
 
     def playing
-      # forecast = Realization::Forecast.new(lat, long)
-      # flights  = Realization::Flights.new(lat, long, 5)
-      # [forecast, flights].map{|api| api.to_score }.flatten.compact
-      ["choir"]
+      @playing ||= begin
+        # forecast = Realization::Forecast.new(lat, long)
+        # flights  = Realization::Flights.new(lat, long, 5)
+        # [forecast.to_score, flights.to_score, noise_score].flatten.compact
+        ["choir", []].sample
+      end
     end
 
     def add
@@ -41,7 +37,7 @@ module Realization
     end
 
     def add_automation(name)
-      automation[name].merge!(name: name)
+      automation[name].merge!(name: name) if automation[name]
     end
 
     def score!
@@ -50,6 +46,10 @@ module Realization
         remove: remove,
         skip: skip?
       }.to_json
+    end
+
+    def noise_score
+      "noise" if current_distance < 1000
     end
 
     def automation
