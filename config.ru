@@ -10,4 +10,5 @@ Dotenv.load
 require 'json'
 require './app'
 require 'realization'
+require 'active_support/core_ext/hash/slice'
 run App if defined?(run)
