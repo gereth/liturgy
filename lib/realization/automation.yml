@@ -11,7 +11,13 @@ choir:
     delay: 0.32
     step: 0.01
     direction: "left"
-
+noise:
+  :volume:
+    start: 0.01
+    stop: 0.99
+    delay: 0.08
+    step: 0.01
+    direction: "up"
 precipitation:
 windspeed:
 temperature:
