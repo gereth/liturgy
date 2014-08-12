@@ -1,6 +1,7 @@
 require 'realization/forecast'
 require 'realization/flights'
 
+
 module Realization
   class Api
     attr_accessor *@@accessors = %i|lat long current_distance channels |
@@ -13,10 +14,10 @@ module Realization
 
     def playing
       @playing ||= begin
-        # forecast = Realization::Forecast.new(lat, long)
-        # flights  = Realization::Flights.new(lat, long, 5)
-        # [forecast.to_score, flights.to_score, noise_score].flatten.compact
-        ["choir", []].sample
+        forecast = Realization::Forecast.new(lat, long)
+        flights  = Realization::Flights.new(lat, long, 5)
+        [forecast.to_score, flights.to_score, noise_score].flatten.compact
+        # ["choir", []].sample
       end
     end
 
